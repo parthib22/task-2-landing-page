@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Head from "next/head";
 
 const ScrollReveal = (props: any) => {
@@ -39,7 +39,7 @@ const ScrollReveal = (props: any) => {
 
     // Cleanup the observer on component unmount
     return () => appearOnScroll.disconnect();
-  }, []);
+  }, [finalStage, rootMargin, threshold, animationType]);
   return (
     <div ref={elementRef} className={`${animationType}`}>
       {props.children}
@@ -90,9 +90,9 @@ const CarouselComponent = () => {
     },
   ];
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
+  }, [slides.length]);
 
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
@@ -102,7 +102,7 @@ const CarouselComponent = () => {
     const interval = setInterval(nextSlide, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [nextSlide]);
 
   return (
     <section className="hero-container">
